@@ -1,0 +1,13 @@
+# http://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
+version: '3'
+services:
+  jenkins-slave-docker:
+    build: .
+    restart: unless-stopped
+    environment:
+      - TZ=Australia/Brisbane
+    volumes:
+      # http://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
+      # Expose Docker socket to CI container
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: "-url ${JENKINS_MASTER_ADDRESS} ${NODE_KEY} ${NODE_NAME}"

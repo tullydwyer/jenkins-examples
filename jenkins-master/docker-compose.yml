@@ -1,0 +1,22 @@
+# http://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
+version: '3.5'
+services:
+  jenkins-master:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8080:8080" # Web console
+      - "50000:50000" # Slaves
+    environment:
+      - TZ=Australia/Brisbane
+    volumes:
+      # expose Docker socket to CI container
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./jenkins-log:/var/log/jenkins
+      - ./jenkins-data:/var/jenkins_home
+    networks:
+      - nginx
+
+networks:
+  nginx:
+    external: true
